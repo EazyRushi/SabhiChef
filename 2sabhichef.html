@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabhi Chef — Homely Food in Minutes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700;1,800&family=Noto+Sans+Devanagari:wght@700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'Nunito',sans-serif; background:#fffdf7; color:#1e0f00; overflow-x:hidden; }
+:root {
+  --yellow:#FEE472; --orange:#F47B40; --red:#DD2D2B;
+  --green:#16703A; --olive:#B7C158; --brown:#995424;
+  --amber:#D89339; --peach:#F4A789; --cream:#FFF9ED; --ink:#1e0f00;
+}
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 48px;
+  background:rgba(255,249,237,0.96); backdrop-filter:blur(16px);
+  border-bottom:3px solid var(--yellow);
+}
+.nav-logo img { height:48px; width:auto; }
+.nav-links { display:flex; gap:8px; list-style:none; align-items:center; }
+.nav-links a {
+  text-decoration:none; font-weight:800; font-size:0.8rem;
+  letter-spacing:0.06em; text-transform:uppercase;
+  padding:8px 16px; border-radius:30px; color:var(--ink); transition:all .2s;
+}
+.nav-links a:hover { background:var(--yellow); }
+.nav-cta { background:var(--orange) !important; color:white !important; box-shadow:4px 4px 0 var(--brown); }
+.nav-cta:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--brown) !important; }
+
+/* HERO */
+.hero {
+  min-height:100vh; background:var(--yellow);
+  display:grid; grid-template-columns:1.1fr 0.9fr;
+  align-items:center; padding:100px 48px 60px; gap:40px;
+  position:relative; overflow:hidden;
+}
+.hero::before { content:''; position:absolute; top:-80px; right:-80px; width:480px; height:480px; border-radius:50%; background:var(--orange); opacity:.15; pointer-events:none; }
+.hero::after  { content:''; position:absolute; bottom:-100px; left:28%; width:320px; height:320px; border-radius:50%; background:var(--red); opacity:.08; pointer-events:none; }
+
+.greet-pill {
+  display:inline-flex; align-items:center; gap:8px;
+  background:white; border:3px solid var(--brown); border-radius:40px;
+  padding:8px 20px; font-weight:800; font-size:0.9rem; color:var(--brown);
+  margin-bottom:22px; box-shadow:3px 3px 0 var(--brown);
+  animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+.greet-word { color:var(--orange); min-width:110px; display:inline-block; transition:opacity .25s; }
+.hero h1 {
+  font-size:clamp(3rem,5.5vw,5rem); font-weight:900; line-height:1.05;
+  color:var(--brown); margin-bottom:18px;
+  animation:slideUp .6s ease both .1s;
+}
+.hero h1 .cr { color:var(--red); }
+.hero h1 .cg { color:var(--green); }
+.hero-sub {
+  font-size:1.05rem; line-height:1.75; color:#5a3010; font-weight:600;
+  max-width:480px; margin-bottom:32px;
+  animation:slideUp .6s ease both .2s;
+}
+.hero-btns { display:flex; gap:14px; flex-wrap:wrap; animation:slideUp .6s ease both .3s; }
+.btn-main {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--red); color:white; font-weight:900; font-size:1rem;
+  padding:14px 30px; border-radius:50px; text-decoration:none;
+  border:3px solid var(--ink); box-shadow:5px 5px 0 var(--ink); transition:all .2s;
+}
+.btn-main:hover { transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--ink); }
+.btn-ghost {
+  display:inline-flex; align-items:center; gap:8px;
+  background:white; color:var(--brown); font-weight:900; font-size:1rem;
+  padding:14px 26px; border-radius:50px; text-decoration:none;
+  border:3px solid var(--brown); box-shadow:5px 5px 0 var(--brown); transition:all .2s;
+}
+.btn-ghost:hover { transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--brown); }
+.hero-stats { display:flex; gap:16px; margin-top:36px; animation:slideUp .6s ease both .4s; flex-wrap:wrap; }
+.stat { background:white; border:3px solid var(--brown); border-radius:16px; padding:12px 18px; box-shadow:4px 4px 0 var(--brown); text-align:center; }
+.stat-n { font-size:1.5rem; font-weight:900; color:var(--orange); line-height:1; }
+.stat-l { font-size:0.62rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:var(--brown); margin-top:2px; }
+
+/* Hero right */
+.hero-right {
+  position:relative; z-index:2;
+  display:grid; grid-template-columns:1fr 1fr; gap:14px;
+}
+.hprod {
+  background:white; border:3px solid var(--ink); border-radius:22px; overflow:hidden;
+  box-shadow:6px 6px 0 var(--ink); transition:all .25s; animation:popIn .6s cubic-bezier(.34,1.56,.64,1) both;
+}
+.hprod:hover { transform:translate(-4px,-4px); box-shadow:10px 10px 0 var(--ink); }
+.hprod.big { grid-column:span 2; display:grid; grid-template-columns:1.2fr 1fr; }
+.hprod.big img { height:210px; width:100%; object-fit:cover; }
+.hprod:not(.big) img { width:100%; aspect-ratio:1; object-fit:cover; display:block; }
+.hprod-info { padding:16px 18px; display:flex; flex-direction:column; justify-content:center; }
+.hptag { font-size:0.62rem; font-weight:900; text-transform:uppercase; letter-spacing:.1em; color:var(--orange); margin-bottom:3px; }
+.hpname { font-size:1rem; font-weight:900; margin-bottom:4px; }
+.hpdesc { font-size:0.73rem; color:#7a4a20; font-weight:600; line-height:1.5; }
+.hpprice { font-size:1.05rem; font-weight:900; color:var(--green); margin-top:8px; }
+
+/* STRIP */
+.strip { background:var(--green); color:var(--yellow); padding:12px 0; overflow:hidden; border-top:3px solid var(--ink); border-bottom:3px solid var(--ink); }
+.strip-track { display:flex; white-space:nowrap; animation:scroll 22s linear infinite; }
+.strip-track span { font-size:0.78rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; padding:0 30px; }
+.sdot { color:var(--olive) !important; padding:0 4px !important; }
+@keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* SECTION COMMON */
+.sec { padding:80px 48px; }
+.sec-label {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--yellow); border:2px solid var(--brown); border-radius:30px;
+  padding:6px 16px; font-size:0.68rem; font-weight:900;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--brown); margin-bottom:14px;
+}
+.sec-title { font-size:clamp(1.9rem,3.5vw,3rem); font-weight:900; line-height:1.1; margin-bottom:10px; }
+.co { color:var(--orange); } .cg { color:var(--green); } .cr { color:var(--red); }
+
+/* WHY */
+.why-sec { background:var(--cream); border-top:3px solid var(--ink); border-bottom:3px solid var(--ink); }
+.why-inner { display:grid; grid-template-columns:1fr 1.1fr; gap:56px; align-items:center; }
+.why-body p { font-size:0.95rem; line-height:1.8; color:#5a3010; font-weight:600; margin-bottom:12px; }
+.usp-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+.usp-chip { display:flex; align-items:center; gap:6px; background:white; border:2.5px solid var(--brown); border-radius:30px; padding:7px 14px; font-size:0.76rem; font-weight:800; color:var(--brown); box-shadow:3px 3px 0 var(--brown); }
+.why-cards { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.wcard { border-radius:20px; padding:22px 18px; border:3px solid var(--ink); transition:all .2s; }
+.wcard:hover { transform:translate(-3px,-3px); box-shadow:6px 6px 0 var(--ink); }
+.wc1{background:var(--yellow);} .wc2{background:var(--orange);color:white;} .wc3{background:#e0f5e8;} .wc4{background:var(--peach);}
+.wcard-icon { font-size:2rem; margin-bottom:10px; }
+.wcard h4 { font-size:0.9rem; font-weight:900; margin-bottom:5px; }
+.wcard p { font-size:0.76rem; line-height:1.6; font-weight:600; }
+.wc2 p { color:rgba(255,255,255,.85); }
+
+/* AUDIENCE */
+.aud-sec { background:var(--ink); color:white; border-top:3px solid var(--yellow); border-bottom:3px solid var(--yellow); }
+.aud-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:36px; }
+.acard { border-radius:24px; padding:32px 26px; border:3px solid rgba(255,255,255,.12); transition:all .25s; }
+.acard:hover { border-color:var(--yellow); transform:translateY(-6px); }
+.ac1{background:#1a2a00;} .ac2{background:#2e1400;} .ac3{background:#001a2e;}
+.aemoji { font-size:2.5rem; margin-bottom:16px; }
+.acard h3 { font-size:1.2rem; font-weight:900; margin-bottom:10px; }
+.acard p { font-size:0.83rem; line-height:1.75; color:rgba(255,255,255,.62); font-weight:600; }
+.aquote { margin-top:14px; font-size:0.76rem; font-style:italic; color:var(--yellow); font-weight:700; }
+
+/* PRODUCTS */
+.prod-sec { background:var(--cream); }
+.prod-head { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:36px; flex-wrap:wrap; gap:20px; }
+.filters { display:flex; gap:8px; flex-wrap:wrap; }
+.ftab {
+  padding:8px 18px; border-radius:30px; border:2.5px solid var(--brown);
+  background:transparent; font-family:'Nunito',sans-serif; font-weight:800;
+  font-size:0.76rem; color:var(--brown); cursor:pointer; transition:all .2s;
+  box-shadow:3px 3px 0 var(--brown);
+}
+.ftab:hover,.ftab.on { background:var(--orange); border-color:var(--orange); color:white; box-shadow:3px 3px 0 var(--ink); }
+.pgrid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+.pcard { background:white; border:3px solid var(--ink); border-radius:22px; overflow:hidden; box-shadow:5px 5px 0 var(--ink); transition:all .25s; cursor:pointer; }
+.pcard:hover { transform:translate(-4px,-4px); box-shadow:9px 9px 0 var(--ink); }
+.pcard-img { position:relative; overflow:hidden; }
+.pcard-img img { width:100%; aspect-ratio:1; object-fit:cover; display:block; transition:transform .5s; }
+.pcard:hover .pcard-img img { transform:scale(1.07); }
+.pbadge { position:absolute; top:10px; left:10px; font-size:0.58rem; font-weight:900; text-transform:uppercase; letter-spacing:.08em; padding:5px 11px; border-radius:30px; border:2px solid var(--ink); }
+.by{background:var(--yellow);} .bo{background:var(--orange);color:white;} .bg{background:#c8f5d8;} .br{background:var(--peach);} .bk{background:var(--amber);color:white;}
+.pcard-body { padding:14px 16px; }
+.pcat { font-size:0.6rem; font-weight:900; text-transform:uppercase; letter-spacing:.1em; color:var(--orange); margin-bottom:3px; }
+.pname { font-size:0.95rem; font-weight:900; margin-bottom:4px; }
+.pmeta { font-size:0.7rem; color:#7a4a20; font-weight:600; margin-bottom:10px; }
+.pfoot { display:flex; justify-content:space-between; align-items:center; }
+.pprice { font-size:0.95rem; font-weight:900; color:var(--green); }
+.addbtn { width:32px; height:32px; border-radius:50%; border:2.5px solid var(--ink); background:var(--yellow); font-size:1.1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; transition:all .2s; box-shadow:3px 3px 0 var(--ink); }
+.addbtn:hover { background:var(--orange); color:white; transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--ink); }
+
+/* COMBOS */
+.combo-sec { background:var(--orange); border-top:3px solid var(--ink); border-bottom:3px solid var(--ink); }
+.combo-sec .sec-title { color:white; }
+.combo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:36px; }
+.combo-card { background:white; border:3px solid var(--ink); border-radius:20px; padding:26px 22px; box-shadow:5px 5px 0 var(--ink); transition:all .25s; }
+.combo-card:hover { transform:translate(-4px,-4px); box-shadow:9px 9px 0 var(--ink); background:var(--yellow); }
+.combo-icon { font-size:2rem; margin-bottom:10px; }
+.combo-card h3 { font-size:1rem; font-weight:900; margin-bottom:5px; }
+.combo-card p { font-size:0.73rem; color:#7a4a20; font-weight:600; margin-bottom:10px; line-height:1.5; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; }
+.chip { font-size:0.63rem; font-weight:800; background:var(--cream); border:2px solid var(--brown); border-radius:20px; padding:3px 9px; color:var(--brown); }
+
+/* STORY */
+.story-sec { background:var(--cream); }
+.story-inner { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+.story-card { background:var(--yellow); border:3px solid var(--ink); border-radius:28px; padding:44px 32px; box-shadow:7px 7px 0 var(--ink); text-align:center; position:relative; }
+.story-emoji { font-size:5rem; display:block; margin-bottom:14px; }
+.story-card h3 { font-size:1.2rem; font-weight:900; margin-bottom:4px; }
+.story-card p { font-size:0.78rem; color:#7a4a20; font-weight:700; }
+.sq-box { position:absolute; bottom:-20px; right:-20px; background:var(--red); color:white; border:3px solid var(--ink); border-radius:16px; padding:14px 18px; max-width:200px; box-shadow:4px 4px 0 var(--ink); }
+.sq-box p { font-size:0.73rem; line-height:1.5; font-style:italic; font-weight:700; }
+.sq-box .sq-auth { font-size:0.66rem; font-weight:900; margin-top:6px; font-style:normal; opacity:.85; }
+.story-text p { font-size:0.93rem; line-height:1.85; color:#5a3010; font-weight:600; margin-bottom:14px; }
+.vals { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:22px; }
+.val { display:flex; align-items:center; gap:8px; font-size:0.78rem; font-weight:800; }
+.vdot { width:26px; height:26px; min-width:26px; border-radius:8px; background:var(--yellow); border:2px solid var(--brown); display:flex; align-items:center; justify-content:center; font-size:0.78rem; }
+
+/* DELIVERY */
+.del-sec { background:var(--green); color:white; border-top:3px solid var(--ink); border-bottom:3px solid var(--ink); }
+.del-sec .sec-label { background:var(--yellow); }
+.del-inner { display:grid; grid-template-columns:1fr 1fr 1fr; gap:36px; align-items:center; }
+.del-main h2 { font-size:1.9rem; font-weight:900; margin-bottom:10px; }
+.del-main p { font-size:0.88rem; color:rgba(255,255,255,.72); font-weight:600; line-height:1.7; }
+.dcards { display:flex; flex-direction:column; gap:11px; }
+.dcard { background:rgba(255,255,255,.09); border:2px solid rgba(255,255,255,.2); border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; transition:all .2s; }
+.dcard:hover { background:rgba(255,255,255,.16); }
+.dicon { width:40px; height:40px; min-width:40px; border-radius:10px; background:rgba(254,228,114,.18); display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
+.dcard h4 { font-size:0.82rem; font-weight:900; margin-bottom:2px; }
+.dcard p { font-size:0.7rem; color:rgba(255,255,255,.58); font-weight:600; }
+.bulk-box { background:rgba(255,255,255,.09); border:3px dashed rgba(255,255,255,.28); border-radius:22px; padding:32px 24px; text-align:center; }
+.bulk-box h3 { font-size:1.2rem; font-weight:900; margin-bottom:8px; }
+.bulk-box p { font-size:0.8rem; color:rgba(255,255,255,.62); font-weight:600; margin-bottom:18px; line-height:1.6; }
+
+/* CONTACT */
+.contact-sec { background:var(--yellow); border-top:3px solid var(--ink); }
+.contact-inner { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+.contact-left h2 { font-size:clamp(1.8rem,3vw,2.7rem); font-weight:900; margin-bottom:12px; }
+.contact-left > p { font-size:0.93rem; color:#5a3010; font-weight:700; line-height:1.7; margin-bottom:26px; }
+.ci-items { display:flex; flex-direction:column; gap:13px; }
+.ci-item { display:flex; align-items:center; gap:12px; font-size:0.86rem; font-weight:700; }
+.ci-icon { width:40px; height:40px; min-width:40px; border-radius:12px; background:white; border:2.5px solid var(--brown); display:flex; align-items:center; justify-content:center; font-size:1.1rem; box-shadow:3px 3px 0 var(--brown); }
+.ci-item a { color:var(--ink); text-decoration:none; }
+.ci-item a:hover { color:var(--red); }
+.cform { background:white; border:3px solid var(--ink); border-radius:26px; padding:38px 32px; box-shadow:7px 7px 0 var(--ink); }
+.cform h3 { font-size:1.35rem; font-weight:900; margin-bottom:22px; }
+.fg { margin-bottom:16px; }
+.fg label { display:block; font-size:0.7rem; font-weight:900; text-transform:uppercase; letter-spacing:.1em; color:var(--brown); margin-bottom:5px; }
+.fg input,.fg textarea,.fg select { width:100%; padding:11px 14px; border:2.5px solid var(--brown); border-radius:11px; font-size:0.88rem; font-family:'Nunito',sans-serif; color:var(--ink); background:var(--cream); outline:none; transition:border-color .2s; }
+.fg input:focus,.fg textarea:focus,.fg select:focus { border-color:var(--orange); }
+.fg textarea { resize:vertical; min-height:85px; }
+.sbtn { width:100%; padding:13px; background:var(--red); color:white; border:2.5px solid var(--ink); border-radius:40px; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:900; cursor:pointer; box-shadow:4px 4px 0 var(--ink); transition:all .2s; }
+.sbtn:hover { transform:translate(-3px,-3px); box-shadow:7px 7px 0 var(--ink); }
+
+/* FOOTER */
+footer { background:var(--ink); color:white; padding:56px 48px 28px; border-top:4px solid var(--yellow); }
+.foot-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:44px; margin-bottom:44px; padding-bottom:36px; border-bottom:2px solid rgba(255,255,255,.1); }
+.foot-logo { height:50px; width:auto; margin-bottom:12px; filter:brightness(0) saturate(100%) invert(88%) sepia(46%) saturate(500%) hue-rotate(342deg) brightness(105%); }
+.foot-tag { font-size:0.8rem; color:rgba(255,255,255,.48); line-height:1.7; max-width:230px; font-weight:600; }
+.foot-soc { display:flex; gap:9px; margin-top:16px; }
+.fsoc { width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; font-size:0.85rem; text-decoration:none; transition:all .2s; }
+.fsoc:hover { background:var(--yellow); border-color:var(--yellow); }
+.fcol h5 { font-size:0.68rem; font-weight:900; text-transform:uppercase; letter-spacing:.15em; color:rgba(255,255,255,.32); margin-bottom:14px; }
+.fcol ul { list-style:none; }
+.fcol li { margin-bottom:9px; }
+.fcol a { font-size:0.8rem; color:rgba(255,255,255,.58); text-decoration:none; font-weight:700; transition:color .2s; }
+.fcol a:hover { color:var(--yellow); }
+.foot-bot { display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:rgba(255,255,255,.28); font-weight:700; }
+
+/* REVEAL */
+.reveal { opacity:0; transform:translateY(28px); transition:opacity .65s, transform .65s; }
+.reveal.in { opacity:1; transform:translateY(0); }
+
+/* KEYFRAMES */
+@keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes popIn  { from{opacity:0;transform:scale(.82)} to{opacity:1;transform:scale(1)} }
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  nav{padding:14px 22px;} .hero{grid-template-columns:1fr;padding:100px 22px 56px;} .hero-right{display:none;} .why-inner,.story-inner,.contact-inner{grid-template-columns:1fr;} .why-cards{display:none;} .aud-grid{grid-template-columns:1fr;} .pgrid{grid-template-columns:1fr 1fr;} .combo-grid{grid-template-columns:1fr 1fr;} .del-inner{grid-template-columns:1fr;} .foot-top{grid-template-columns:1fr 1fr;} .sec{padding:56px 22px;}
+}
+@media(max-width:640px){
+  .nav-links{display:none;} .pgrid{grid-template-columns:1fr;} .combo-grid{grid-template-columns:1fr;} .foot-top{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#"><img src="Primary_Logo.svg" alt="Sabhi Chef"></a>
+  <ul class="nav-links">
+    <li><a href="#products">Products</a></li>
+    <li><a href="#combos">Combos</a></li>
+    <li><a href="#story">Our Story</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="https://www.sabhichef.com/shop" target="_blank" class="nav-cta">Shop Now →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div style="position:relative;z-index:2">
+    <div class="greet-pill">👋 <span class="greet-word" id="gw">नमस्ते!</span> — from our kitchen to yours</div>
+    <h1>Real Indian food.<br><span class="cr">Tasty.</span> <span class="cg">Healthy.</span><br>Ready in minutes.</h1>
+    <p class="hero-sub">No long hours. No Maggi guilt. Just open the pack, add water, cook — and enjoy the taste of home wherever you are in the world.</p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-main">Explore Products →</a>
+      <a href="#story" class="btn-ghost">Our Story</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">16+</div><div class="stat-l">Products</div></div>
+      <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Homemade</div></div>
+      <div class="stat"><div class="stat-n">0</div><div class="stat-l">Preservatives</div></div>
+      <div class="stat"><div class="stat-n">1–10</div><div class="stat-l">Minutes</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <!-- Hero 1: Masala Khichdi big -->
+    <div class="hprod big" style="animation-delay:.2s">
+      <img src="Masala_KHichdi.jpg" alt="Masala Khichdi">
+      <div class="hprod-info">
+        <div class="hptag">⭐ Hero Product</div>
+        <div class="hpname">Masala Khichdi</div>
+        <div class="hpdesc">Comfort in a bowl. Ready in 5 mins. 150 gm · Serves 2</div>
+        <div class="hpprice">₹150</div>
+      </div>
+    </div>
+    <!-- Hero 2: Vanilla Cake -->
+    <div class="hprod" style="animation-delay:.35s">
+      <img src="Vanila_Cake.jpg" alt="Vanilla Cake">
+      <div class="hprod-info" style="padding:12px 14px;">
+        <div class="hptag">Eggless · Sweet</div>
+        <div class="hpname" style="font-size:.9rem;">Vanilla Cake</div>
+        <div class="hpprice" style="font-size:.9rem;">₹150</div>
+      </div>
+    </div>
+    <!-- Hero 3: Moong Chila -->
+    <div class="hprod" style="animation-delay:.5s">
+      <img src="Moong_Chilla.jpg" alt="Moong Chila">
+      <div class="hprod-info" style="padding:12px 14px;">
+        <div class="hptag">Healthy · 4 mins</div>
+        <div class="hpname" style="font-size:.9rem;">Moong Chila</div>
+        <div class="hpprice" style="font-size:.9rem;">₹150</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRIP -->
+<div class="strip"><div class="strip-track">
+  <span>100% Homemade</span><span class="sdot">✦</span><span>No Preservatives</span><span class="sdot">✦</span><span>No Artificial Colors</span><span class="sdot">✦</span><span>Ready in Minutes</span><span class="sdot">✦</span><span>Pan India Delivery</span><span class="sdot">✦</span><span>Authentic Recipes</span><span class="sdot">✦</span><span>Made with Love</span><span class="sdot">✦</span><span>Free Shipping ₹1500+</span><span class="sdot">✦</span>
+  <span>100% Homemade</span><span class="sdot">✦</span><span>No Preservatives</span><span class="sdot">✦</span><span>No Artificial Colors</span><span class="sdot">✦</span><span>Ready in Minutes</span><span class="sdot">✦</span><span>Pan India Delivery</span><span class="sdot">✦</span><span>Authentic Recipes</span><span class="sdot">✦</span><span>Made with Love</span><span class="sdot">✦</span><span>Free Shipping ₹1500+</span><span class="sdot">✦</span>
+</div></div>
+
+<!-- WHY -->
+<section class="sec why-sec reveal">
+  <div class="why-inner">
+    <div>
+      <div class="sec-label">Why Sabhi Chef?</div>
+      <h2 class="sec-title">Skip the Maggi.<br><span class="co">Have real food instead.</span></h2>
+      <p>It's midnight. You're hungry, tired from a long day (or a late study session), and the only thing nearby is instant noodles. Sound painfully familiar?</p>
+      <p>We built Sabhi Chef so you never have to settle. Our mixes are as quick as Maggi — but loaded with real ingredients, real nutrition, and recipes perfected in a mom's kitchen.</p>
+      <div class="usp-row">
+        <div class="usp-chip">🌿 Zero preservatives</div>
+        <div class="usp-chip">🎨 No artificial colour</div>
+        <div class="usp-chip">🏠 100% homemade</div>
+        <div class="usp-chip">⏱️ 1–10 mins ready</div>
+        <div class="usp-chip">🇮🇳 Authentic recipes</div>
+        <div class="usp-chip">✅ Hygienically packed</div>
+      </div>
+    </div>
+    <div class="why-cards">
+      <div class="wcard wc1"><div class="wcard-icon">💧</div><h4>Just Add Water</h4><p>Open the pack, add hot water or cook — done. A real homemade meal in minutes.</p></div>
+      <div class="wcard wc2"><div class="wcard-icon">💛</div><h4>Made with Love</h4><p>Every mix is personally crafted by Surekha — a mom who started this to feed her daughter abroad.</p></div>
+      <div class="wcard wc3"><div class="wcard-icon">🌍</div><h4>Anywhere, Anytime</h4><p>Studying in London? Working late in Pune? We ship Pan India — and pack light enough to travel.</p></div>
+      <div class="wcard wc4"><div class="wcard-icon">🥗</div><h4>Actually Healthy</h4><p>Real grains, real spices, real food. We read every ingredient so you don't have to worry.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIENCE -->
+<section class="sec aud-sec reveal" id="audience">
+  <div class="sec-label">Made for You</div>
+  <h2 class="sec-title" style="color:white">Ghar ka khana, <span class="co">wherever you are.</span></h2>
+  <div class="aud-grid">
+    <div class="acard ac1"><div class="aemoji">🎓</div><h3>Students Abroad</h3><p>You aced your visa, packed your bags, and landed in a foreign city — only to miss dal chawal more than anything. We've got you.</p><div class="aquote">"Have Instant Poha instead of midnight Maggi."</div></div>
+    <div class="acard ac2"><div class="aemoji">💼</div><h3>Busy Professionals</h3><p>Meetings back-to-back, deadlines that don't stop. You deserve a hot, healthy meal — not another night of settling for junk.</p><div class="aquote">"Real food that fits your schedule — not the other way around."</div></div>
+    <div class="acard ac3"><div class="aemoji">🌏</div><h3>Indians Travelling Abroad</h3><p>Finding good vegetarian food abroad is a real struggle. Pack a few mixes and carry the taste of home wherever your journey takes you.</p><div class="aquote">"Authentic Indian flavour — no matter the timezone."</div></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="sec prod-sec reveal" id="products">
+  <div class="prod-head">
+    <div>
+      <div class="sec-label">Our Products</div>
+      <h2 class="sec-title">Step into an <span class="cg">Indian Kitchen</span></h2>
+    </div>
+    <div class="filters">
+      <button class="ftab on" onclick="fp('all',this)">All</button>
+      <button class="ftab" onclick="fp('breakfast',this)">Breakfast</button>
+      <button class="ftab" onclick="fp('meals',this)">Meals</button>
+      <button class="ftab" onclick="fp('sweet',this)">Sweet &amp; Drinks</button>
+      <button class="ftab" onclick="fp('condiment',this)">Condiments</button>
+    </div>
+  </div>
+  <div class="pgrid" id="pgrid">
+
+    <div class="pcard" data-cat="meals"><div class="pcard-img"><img src="Masala_KHichdi.jpg" alt="Masala Khichdi"><span class="pbadge by">⭐ Hero</span></div><div class="pcard-body"><div class="pcat">Comfort Meal</div><div class="pname">Masala Khichdi</div><div class="pmeta">150 gm · Serves 2 · 5 mins</div><div class="pfoot"><span class="pprice">₹150</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="sweet"><div class="pcard-img"><img src="Vanila_Cake.jpg" alt="Vanilla Cake"><span class="pbadge br">⭐ Eggless</span></div><div class="pcard-body"><div class="pcat">Sweet · Eggless</div><div class="pname">Vanilla Cake</div><div class="pmeta">200 gm · Serves 5</div><div class="pfoot"><span class="pprice">₹150</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="breakfast"><div class="pcard-img"><img src="Moong_Chilla.jpg" alt="Moong Chila"><span class="pbadge bg">⭐ Healthy</span></div><div class="pcard-body"><div class="pcat">Healthy Breakfast</div><div class="pname">Moong Chila</div><div class="pmeta">150 gm · Makes 6 · 4 mins</div><div class="pfoot"><span class="pprice">₹150</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="meals"><div class="pcard-img"><img src="Shev_BHaji.jpg" alt="Shev Bhaji"><span class="pbadge bo">5 mins</span></div><div class="pcard-body"><div class="pcat">Maharashtrian</div><div class="pname">Shev Bhaji</div><div class="pmeta">150 gm · Serves 5</div><div class="pfoot"><span class="pprice">₹250</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="meals"><div class="pcard-img"><img src="Matki_Misal.jpg" alt="Matki Misal"><span class="pbadge bk">5 mins</span></div><div class="pcard-body"><div class="pcat">Maharashtrian</div><div class="pname">Matki Misal</div><div class="pmeta">250 gm · Serves 5</div><div class="pfoot"><span class="pprice">₹250</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="breakfast"><div class="pcard-img"><img src="Instant_Poha.jpg" alt="Instant Poha"><span class="pbadge by">5 mins</span></div><div class="pcard-body"><div class="pcat">Breakfast</div><div class="pname">Instant Poha</div><div class="pmeta">150 gm · Serves 2</div><div class="pfoot"><span class="pprice">₹100</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="breakfast"><div class="pcard-img"><img src="Rawa_Upma.jpg" alt="Rawa Upma"><span class="pbadge bo">5 mins</span></div><div class="pcard-body"><div class="pcat">Breakfast</div><div class="pname">Rawa Upma</div><div class="pmeta">150 gm · Serves 3</div><div class="pfoot"><span class="pprice">₹150</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="breakfast"><div class="pcard-img"><img src="Multigrain_Dosa.jpg" alt="Multigrain Dosa"><span class="pbadge bg">5 mins</span></div><div class="pcard-body"><div class="pcat">Breakfast</div><div class="pname">Multigrain Dosa</div><div class="pmeta">150 gm · Serves 6</div><div class="pfoot"><span class="pprice">₹150</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="breakfast"><div class="pcard-img"><img src="Pan_Cake.jpg" alt="Eggless Pancake"><span class="pbadge br">Eggless · 4 mins</span></div><div class="pcard-body"><div class="pcat">Breakfast · Eggless</div><div class="pname">Eggless Pancake</div><div class="pmeta">150 gm · Makes 12</div><div class="pfoot"><span class="pprice">₹150</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="meals"><div class="pcard-img"><img src="Oats_Khichdi.jpg" alt="Oats Khichdi"><span class="pbadge bg">10 mins</span></div><div class="pcard-body"><div class="pcat">Healthy Meal</div><div class="pname">Oats Khichdi</div><div class="pmeta">150 gm · Serves 3</div><div class="pfoot"><span class="pprice">₹150</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="meals"><div class="pcard-img"><img src="khandeshi_pithla.jpg" alt="Khandeshi Pithla"><span class="pbadge by">4 mins</span></div><div class="pcard-body"><div class="pcat">Khandeshi Special</div><div class="pname">Khandeshi Pithla</div><div class="pmeta">50 gm · Serves 3</div><div class="pfoot"><span class="pprice">₹100</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="meals"><div class="pcard-img"><img src="Rice_Dhokla.jpg" alt="Rice Dhokla"><span class="pbadge bg">10 mins</span></div><div class="pcard-body"><div class="pcat">Snack / Breakfast</div><div class="pname">Rice Dhokla</div><div class="pmeta">150 gm · Makes 30</div><div class="pfoot"><span class="pprice">₹150</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="sweet"><div class="pcard-img"><img src="Chocolate_Cake.jpg" alt="Chocolate Cake"><span class="pbadge br">Eggless</span></div><div class="pcard-body"><div class="pcat">Sweet · Eggless</div><div class="pname">Chocolate Cake</div><div class="pmeta">200 gm · Serves 5</div><div class="pfoot"><span class="pprice">₹150</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="sweet"><div class="pcard-img"><img src="Kashmiri_kahwa.jpg" alt="Kashmiri Kahwa"><span class="pbadge bo">1 min</span></div><div class="pcard-body"><div class="pcat">Beverage</div><div class="pname">Kashmiri Kahwa</div><div class="pmeta">150 gm · Serves 20</div><div class="pfoot"><span class="pprice">₹150</span><button class="addbtn">+</button></div></div></div>
+
+    <div class="pcard" data-cat="condiment"><div class="pcard-img"><img src="Green_Chutney.jpg" alt="Green Chutney"><span class="pbadge bg">1 min</span></div><div class="pcard-body"><div class="pcat">Condiment</div><div class="pname">Green Chutney</div><div class="pmeta">50 gm · Serves 10</div><div class="pfoot"><span class="pprice">₹100</span><button class="addbtn">+</button></div></div></div>
+
+  </div>
+  <div style="text-align:center;margin-top:36px;">
+    <a href="https://www.sabhichef.com/shop" target="_blank" class="btn-main">View Full Shop →</a>
+  </div>
+</section>
+
+<!-- COMBOS -->
+<section class="sec combo-sec reveal" id="combos">
+  <div class="sec-label">Curated Combos</div>
+  <h2 class="sec-title">Can't decide? <em>We did it for you.</em></h2>
+  <div class="combo-grid">
+    <div class="combo-card"><div class="combo-icon">🌅</div><h3>The Breakfast Combo</h3><p>Your perfect morning lineup, every day.</p><div class="chips"><span class="chip">Moong Chila</span><span class="chip">Multigrain Dosa</span><span class="chip">Pancake</span><span class="chip">Instant Poha</span><span class="chip">Rawa Upma</span></div></div>
+    <div class="combo-card"><div class="combo-icon">🧡</div><h3>Taste of Maharashtra</h3><p>Bold, spicy flavours of home — wherever you are.</p><div class="chips"><span class="chip">Shev Bhaji</span><span class="chip">Matki Misal</span><span class="chip">Khandeshi Pithla</span></div></div>
+    <div class="combo-card"><div class="combo-icon">🍫</div><h3>The Sweet Tooth</h3><p>For when you deserve a treat. Which is always.</p><div class="chips"><span class="chip">Pancake</span><span class="chip">Vanilla Cake</span><span class="chip">Chocolate Cake</span><span class="chip">Kashmiri Kahwa</span></div></div>
+    <div class="combo-card"><div class="combo-icon">🏠</div><h3>A Glimpse of Home</h3><p>Comfort food for the homesick soul.</p><div class="chips"><span class="chip">Masala Khichdi</span><span class="chip">Oats Khichdi</span><span class="chip">Instant Poha</span><span class="chip">Rawa Upma</span></div></div>
+    <div class="combo-card"><div class="combo-icon">🍲</div><h3>The Gravy Gang</h3><p>Bold, hearty gravies that mean business.</p><div class="chips"><span class="chip">Shev Bhaji</span><span class="chip">Matki Misal</span><span class="chip">Red Gravy</span></div></div>
+    <div class="combo-card"><div class="combo-icon">🥞</div><h3>The Flat Stars</h3><p>Crispy, golden, packed with goodness.</p><div class="chips"><span class="chip">Moong Chila</span><span class="chip">Multigrain Dosa</span><span class="chip">Eggless Pancake</span></div></div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="sec story-sec reveal" id="story">
+  <div class="story-inner">
+    <div style="position:relative;padding-bottom:28px;">
+      <div class="story-card">
+        <span class="story-emoji">👩‍🍳</span>
+        <h3>Surekha &amp; Ruchita</h3>
+        <p>Founders, Sabhi Chef</p>
+        <p style="margin-top:10px;font-size:0.76rem;color:#7a4a20;line-height:1.6;">A mother–daughter duo who turned a longing for home food into a brand that feeds thousands.</p>
+      </div>
+      <div class="sq-box">
+        <p>"I just wanted my daughter to have a warm meal, no matter where she was."</p>
+        <div class="sq-auth">— Surekha, Head Chef</div>
+      </div>
+    </div>
+    <div class="story-text">
+      <div class="sec-label">Our Story</div>
+      <h2 class="sec-title">Born from a <span class="cr">mother's love</span></h2>
+      <p>When Ruchita left home to study abroad, she carried her textbooks, her ambitions — and a deep craving for her mother's cooking. Surekha felt it too, on the other side of the world.</p>
+      <p>So Surekha did what any loving Indian mother would: she sent homemade mixes. Ruchita would open each packet in her tiny dorm kitchen and suddenly — thousands of miles from home — it smelled exactly like Sunday mornings.</p>
+      <p>They realised thousands of students, professionals, and travellers felt the same way. Sabhi Chef was born — so everyone could have a taste of home, every single day.</p>
+      <div class="vals">
+        <div class="val"><div class="vdot">🌿</div>Preservative-free, always</div>
+        <div class="val"><div class="vdot">🏠</div>Homemade with care</div>
+        <div class="val"><div class="vdot">✨</div>Highest hygiene standards</div>
+        <div class="val"><div class="vdot">💛</div>Authentic family recipes</div>
+        <div class="val"><div class="vdot">⚡</div>Ready in minutes</div>
+        <div class="val"><div class="vdot">🌍</div>Made for Indians everywhere</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERY -->
+<section class="sec del-sec reveal">
+  <div class="del-inner">
+    <div class="del-main">
+      <div class="sec-label">Delivery</div>
+      <h2>Pan India,<br>right to your door 🚀</h2>
+      <p>We make sure your mixes reach you fresh and ready to cook, wherever you are in India.</p>
+    </div>
+    <div class="dcards">
+      <div class="dcard"><div class="dicon">📦</div><div><h4>Free Delivery</h4><p>On all orders above ₹1500</p></div></div>
+      <div class="dcard"><div class="dicon">🚚</div><div><h4>₹150 Shipping</h4><p>For orders under ₹1500</p></div></div>
+      <div class="dcard"><div class="dicon">📅</div><div><h4>5–10 Working Days</h4><p>Delivered to your doorstep</p></div></div>
+      <div class="dcard"><div class="dicon">🌐</div><div><h4>Pan India Coverage</h4><p>We ship across the entire country</p></div></div>
+    </div>
+    <div class="bulk-box">
+      <h3>Bulk Orders &amp;<br>Corporate Gifting?</h3>
+      <p>Planning a Diwali hamper or employee gifting? We love doing special deals for bulk orders!</p>
+      <a href="#contact" class="btn-main" style="background:var(--yellow);color:var(--ink);border-color:var(--ink);display:inline-flex;margin:0 auto;">Let's Talk →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec contact-sec reveal" id="contact">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <div class="sec-label">Get in Touch</div>
+      <h2>We'd love to <span class="cr">hear from you!</span></h2>
+      <p>Questions, bulk orders, corporate gifting, or just want to share which product is your favourite? We're here for all of it.</p>
+      <div class="ci-items">
+        <div class="ci-item"><div class="ci-icon">📞</div><div><strong>Call / WhatsApp</strong><br><a href="tel:+918421888128">+91 84218 88128</a></div></div>
+        <div class="ci-item"><div class="ci-icon">✉️</div><div><strong>Email</strong><br><a href="mailto:sabhichef@gmail.com">sabhichef@gmail.com</a></div></div>
+        <div class="ci-item"><div class="ci-icon">📸</div><div><strong>Instagram</strong><br><a href="https://www.instagram.com/sabhi.chef/" target="_blank">@sabhi.chef</a></div></div>
+      </div>
+    </div>
+    <div class="cform">
+      <h3>Send us a message 👋</h3>
+      <div class="fg"><label>Your Name</label><input type="text" placeholder="Priya Sharma"></div>
+      <div class="fg"><label>Email</label><input type="email" placeholder="priya@example.com"></div>
+      <div class="fg"><label>I'm reaching out about</label><select><option>General Enquiry</option><option>Bulk / Corporate Order</option><option>Delivery Issue</option><option>Product Feedback</option><option>Collaboration</option></select></div>
+      <div class="fg"><label>Message</label><textarea placeholder="Tell us what's on your mind..."></textarea></div>
+      <button class="sbtn" onclick="this.textContent='Message Sent! 🎉';this.style.background='var(--green)'">Send Message →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div>
+      <img src="Primary_Logo.svg" alt="Sabhi Chef" class="foot-logo">
+      <p class="foot-tag">Homely food in minutes. No preservatives. No artificial colours. Real, authentic Indian flavour — wherever life takes you.</p>
+      <div class="foot-soc">
+        <a href="https://www.instagram.com/sabhi.chef/" class="fsoc" target="_blank">📸</a>
+        <a href="https://wa.me/918421888128" class="fsoc" target="_blank">💬</a>
+        <a href="https://www.facebook.com/wix" class="fsoc" target="_blank">👍</a>
+      </div>
+    </div>
+    <div class="fcol"><h5>Shop</h5><ul><li><a href="#products">All Products</a></li><li><a href="#combos">Breakfast Combo</a></li><li><a href="#combos">Taste of Maharashtra</a></li><li><a href="#combos">Glimpse of Home</a></li></ul></div>
+    <div class="fcol"><h5>Company</h5><ul><li><a href="#story">Our Story</a></li><li><a href="#contact">Contact</a></li><li><a href="https://www.sabhichef.com/privacy-policy" target="_blank">Privacy Policy</a></li><li><a href="https://www.sabhichef.com/refund-and-cancellation" target="_blank">Refund Policy</a></li></ul></div>
+    <div class="fcol"><h5>Support</h5><ul><li><a href="tel:+918421888128">+91 84218 88128</a></li><li><a href="mailto:sabhichef@gmail.com">sabhichef@gmail.com</a></li><li><a href="#contact">Bulk Orders</a></li><li><a href="#contact">Corporate Gifting</a></li></ul></div>
+  </div>
+  <div class="foot-bot"><span>© 2025 Sabhi Chef. Made with 💛 in India.</span><span>FSSAI Registered · GST Compliant</span></div>
+</footer>
+
+<script>
+const words=['नमस्ते!','Namaste!','ਸਤ ਸ੍ਰੀ ਅਕਾਲ!','வணக்கம்!','నమస్కారం!','ನಮಸ್ಕಾರ!','Kem Cho!','Namaskar!'];
+let gi=0; const gw=document.getElementById('gw'); gw.style.transition='opacity .3s';
+setInterval(()=>{ gi=(gi+1)%words.length; gw.style.opacity=0; setTimeout(()=>{gw.textContent=words[gi];gw.style.opacity=1;},230); },2200);
+
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.07});
+document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
+
+function fp(cat,btn){
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('on')); btn.classList.add('on');
+  document.querySelectorAll('.pcard').forEach(c=>{ c.style.display=(cat==='all'||c.dataset.cat===cat)?'':'none'; });
+}
+</script>
+</body>
+</html>
