@@ -18,28 +18,41 @@ export default function WhySection() {
         <div className="grid grid-cols-2 gap-14 items-center">
           {/* Left Content */}
           <div>
-            <div className="inline-flex items-center gap-1.5 bg-yellow border-2 border-brown rounded-full px-4 py-1.5 mb-3 font-black text-xs" style={{
+            <div className="inline-flex items-center gap-1.5 bg-yellow border-2 border-brown rounded-full px-4 py-1.5 mb-3 font-black text-xs uppercase tracking-wider" style={{
               background: '#FEE472',
               borderColor: '#995424'
             }}>
-              ⭐ Why Choose Us?
+              Why Sabhi Chef?
             </div>
             <h2 className="text-5xl font-black leading-tight mb-2.5 text-brown">
-              Real food from<br/>real kitchens
+              Skip the Maggii.<br />
+              <span className="text-orange" style={{ color: '#F47B40' }}>Have real food instead.</span>
             </h2>
-            <p className="text-base leading-relaxed text-amber-900 font-semibold mb-5 max-w-sm">
-              We started Sabhi Chef because we missed home-cooked food. Our moms cook authentic recipes with love.
+            <p className="text-[15px] leading-relaxed text-amber-900 font-semibold max-w-md mb-2">
+              It's midnight. You're hungry, tired from a long day (or a late study session), and the only thing nearby is instant noodles. Sound painfully familiar?
+            </p>
+            <p className="text-[15px] leading-relaxed text-amber-900 font-semibold max-w-md mb-6">
+              We built Sabhi Chef so you never have to settle. Our mixes are as quick as Maggii — but loaded with real ingredients, real nutrition, and recipes perfected in a mom's kitchen.
             </p>
 
-            <div className="flex flex-wrap gap-2.5 mt-5">
-              <div className="inline-flex items-center gap-1.5 bg-white border-2 border-brown rounded-full px-3.5 py-1.5 text-xs font-black text-brown shadow-sm" style={{boxShadow: '3px 3px 0 #995424'}}>
-                No Preservatives
+            <div className="flex flex-wrap gap-2.5">
+              <div className="inline-flex items-center gap-1.5 bg-white border-2 border-brown rounded-full px-3.5 py-1.5 text-[11px] font-black text-brown shadow-sm" style={{boxShadow: '3px 3px 0 #995424'}}>
+                🌿 Zero preservatives
               </div>
-              <div className="inline-flex items-center gap-1.5 bg-white border-2 border-brown rounded-full px-3.5 py-1.5 text-xs font-black text-brown shadow-sm" style={{boxShadow: '3px 3px 0 #995424'}}>
-                100% Homemade
+              <div className="inline-flex items-center gap-1.5 bg-white border-2 border-brown rounded-full px-3.5 py-1.5 text-[11px] font-black text-brown shadow-sm" style={{boxShadow: '3px 3px 0 #995424'}}>
+                🎨 No artificial colour
               </div>
-              <div className="inline-flex items-center gap-1.5 bg-white border-2 border-brown rounded-full px-3.5 py-1.5 text-xs font-black text-brown shadow-sm" style={{boxShadow: '3px 3px 0 #995424'}}>
-                Fresh Daily
+              <div className="inline-flex items-center gap-1.5 bg-white border-2 border-brown rounded-full px-3.5 py-1.5 text-[11px] font-black text-brown shadow-sm" style={{boxShadow: '3px 3px 0 #995424'}}>
+                🏠 100% homemade
+              </div>
+              <div className="inline-flex items-center gap-1.5 bg-white border-2 border-brown rounded-full px-3.5 py-1.5 text-[11px] font-black text-brown shadow-sm" style={{boxShadow: '3px 3px 0 #995424'}}>
+                ⏱️ 1–10 mins ready
+              </div>
+              <div className="inline-flex items-center gap-1.5 bg-white border-2 border-brown rounded-full px-3.5 py-1.5 text-[11px] font-black text-brown shadow-sm" style={{boxShadow: '3px 3px 0 #995424'}}>
+                🇮🇳 Authentic recipes
+              </div>
+              <div className="inline-flex items-center gap-1.5 bg-white border-2 border-brown rounded-full px-3.5 py-1.5 text-[11px] font-black text-brown shadow-sm" style={{boxShadow: '3px 3px 0 #995424'}}>
+                ✅ Hygienically packed
               </div>
             </div>
           </div>
