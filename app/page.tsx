@@ -1,5 +1,3 @@
-'use client';
-
 import Navbar from '@/components/navbar';
 import Hero from '@/components/hero';
 import Strip from '@/components/strip';
@@ -8,6 +6,9 @@ import AudienceSection from '@/components/audience-section';
 import ProductsSection from '@/components/products-section';
 import StorySection from '@/components/story-section';
 import Footer from '@/components/footer';
+import { getFeaturedProducts } from '@/lib/supabase/queries';
+
+export const revalidate = 60;
 
 function DeliverySection() {
   const steps = [
@@ -116,11 +117,13 @@ function ContactSection() {
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const featuredProducts = await getFeaturedProducts();
+
   return (
     <>
       <Navbar />
-      <Hero />
+      <Hero featuredProducts={featuredProducts} />
       <Strip />
       <WhySection />
       <AudienceSection />

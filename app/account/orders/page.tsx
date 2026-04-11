@@ -1,8 +1,8 @@
-'use client'
-
+import { getUserOrders } from '@/lib/supabase/queries'
+import { getCurrentUser } from '@/lib/supabase/queries'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { mockOrders } from '@/lib/mock-data'
-import { Package, Eye, RotateCcw } from 'lucide-react'
+import { Package, Eye } from 'lucide-react'
 
 const statusColors: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-700',
@@ -15,9 +15,11 @@ const statusColors: Record<string, string> = {
   refunded: 'bg-purple-100 text-purple-700',
 }
 
-export default function UserOrders() {
-  // Show orders for user u1 (Priya)
-  const orders = mockOrders.filter(o => o.user_id === 'u1')
+export default async function UserOrders() {
+  const user = await getCurrentUser()
+  if (!user) redirect('/login')
+
+  const orders = await getUserOrders()
 
   return (
     <div>
@@ -31,11 +33,11 @@ export default function UserOrders() {
       ) : (
         <div className="space-y-4">
           {orders.map(order => (
-            <div key={order.id} className="bg-white border-2 border-[#1e0f00] rounded-2xl p-5 shadow-[3px_3px_0_#1e0f00]" style={{borderWidth:2.5}}>
+            <div key={order.id} className="bg-white border-2 border-[#1e0f00] rounded-2xl p-5 shadow-[3px_3px_0_#1e0f00]" style={{ borderWidth: 2.5 }}>
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <p className="font-black text-[#1e0f00]">{order.order_number}</p>
-                  <p className="text-xs text-[#7a4a20] mt-0.5">{new Date(order.created_at || '').toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                  <p className="text-xs text-[#7a4a20] mt-0.5">{new Date(order.created_at!).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                 </div>
                 <span className={`text-xs font-bold px-3 py-1 rounded-full capitalize ${statusColors[order.order_status] || ''}`}>{order.order_status}</span>
               </div>
@@ -49,15 +51,10 @@ export default function UserOrders() {
               </div>
               <div className="flex items-center justify-between pt-3 border-t border-[#995424]/10">
                 <span className="text-lg font-black text-[#DD2D2B]">₹{order.total}</span>
-                <div className="flex gap-2">
-                  <Link href={`/track/${order.order_number}`}
-                    className="flex items-center gap-1.5 text-xs font-bold text-[#F47B40] bg-[#F47B40]/10 px-3 py-1.5 rounded-lg hover:bg-[#F47B40]/20 transition">
-                    <Eye className="w-3 h-3" /> Track
-                  </Link>
-                  <button className="flex items-center gap-1.5 text-xs font-bold text-[#16703A] bg-[#16703A]/10 px-3 py-1.5 rounded-lg hover:bg-[#16703A]/20 transition">
-                    <RotateCcw className="w-3 h-3" /> Reorder
-                  </button>
-                </div>
+                <Link href={`/track/${order.order_number}`}
+                  className="flex items-center gap-1.5 text-xs font-bold text-[#F47B40] bg-[#F47B40]/10 px-3 py-1.5 rounded-lg hover:bg-[#F47B40]/20 transition">
+                  <Eye className="w-3 h-3" /> Track Order
+                </Link>
               </div>
             </div>
           ))}
