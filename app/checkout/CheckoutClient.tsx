@@ -45,7 +45,7 @@ export default function CheckoutClient({ savedAddresses }: Props) {
   const handleApplyCoupon = async () => {
     setCouponError(''); setCouponSuccess('')
     const result = await validateCoupon(couponCode, subtotal)
-    if ('error' in result) { setCouponError(result.error); setDiscount(0); setCouponId('') }
+    if ('error' in result) { setCouponError(result.error ?? 'Invalid coupon'); setDiscount(0); setCouponId('') }
     else {
       setDiscount(result.discount)
       setCouponId(result.coupon.id)
