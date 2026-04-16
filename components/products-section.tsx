@@ -2,10 +2,16 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { products } from '@/lib/products';
+import type { Product } from '@/lib/types';
+import { useCartStore } from '@/lib/store/cart-store';
 
-export default function ProductsSection() {
+interface ProductsSectionProps {
+  products: Product[];
+}
+
+export default function ProductsSection({ products }: ProductsSectionProps) {
   const [activeFilter, setActiveFilter] = useState('all');
+  const addItem = useCartStore(s => s.addItem);
 
   const categories = ['All', 'Meals', 'Breakfast', 'Sweet', 'Condiment', 'Beverage', 'Snack'];
 
@@ -62,7 +68,11 @@ export default function ProductsSection() {
                 }}
               >
                 <div className="relative overflow-hidden bg-gradient-to-br from-[#FEE472]/30 to-[#F47B40]/20 aspect-square flex items-center justify-center text-6xl">
-                  {product.category === 'breakfast' ? '🌅' : product.category === 'meals' ? '🍲' : product.category === 'sweet' ? '🍰' : product.category === 'beverage' ? '☕' : '🌿'}
+                  {product.image_url && !product.image_url.includes('placeholder') ? (
+                    <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                  ) : (
+                    product.category === 'breakfast' ? '🌅' : product.category === 'meals' ? '🍲' : product.category === 'sweet' ? '🍰' : product.category === 'beverage' ? '☕' : '🌿'
+                  )}
                   {product.is_featured && (
                     <div className="absolute top-3 left-3 text-[10px] font-black uppercase tracking-wider px-2.5 py-1.5 rounded-full border-2 border-ink bg-[#FEE472] text-[#1e0f00]">
                       Featured
@@ -76,7 +86,11 @@ export default function ProductsSection() {
                   <p className="text-xs text-[#7a4a20] font-semibold mb-2.5">{product.weight} · {product.servings}</p>
                   <div className="flex justify-between items-center">
                     <p className="text-sm font-black text-[#16703A]">₹{product.price}</p>
-                    <button className="w-8 h-8 rounded-full border-2 bg-[#FEE472] font-black text-base flex items-center justify-center transition-all hover:bg-[#F47B40] hover:text-white" style={{borderColor: '#1e0f00', boxShadow: '3px 3px 0 #1e0f00'}}>
+                    <button 
+                      onClick={(e) => { e.preventDefault(); addItem(product); }}
+                      className="w-8 h-8 rounded-full border-2 bg-[#FEE472] font-black text-base flex items-center justify-center transition-all hover:bg-[#F47B40] hover:text-white" 
+                      style={{borderColor: '#1e0f00', boxShadow: '3px 3px 0 #1e0f00'}}
+                    >
                       +
                     </button>
                   </div>

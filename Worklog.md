@@ -15,15 +15,19 @@ This document serves as a comprehensive log of all the engineering, frontend, an
 
 ## 3. Frontend & Static UI Enhancements (`components/`)
 ### Hero Section (`components/hero.tsx`)
-- Optimized the Hero grid layout, transforming it into a clean **2×2 grid layout** holding 4 specific products (Masala Khichdi, Vanilla Cake, Moong Chilla, Poha).
 - Engineered a **dynamic cycling greeting** component that smoothly cross-fades through "Namaste!" in multiple regional languages on an interval.
 - Replaced generic CSS utility classes with explicit inline styling for critical brand colors (e.g., `#F47B40` stats, `#DD2D2B` Tasty text, `#16703A` Healthy text) to prevent layout blending.
 - Increased visibility of the "Shop Now" button with precise dark red background and white high-contrast text.
+- **[DYNAMIC UPGRADE]**: Transformed the static 2×2 featured products grid into a dynamic interface. Admins can now pick exactly which 4 dishes display in the hero section natively from the admin dashboard via Supabase.
 
 ### Seamless Scrolling Strip (`components/strip.tsx`)
 - Fixed broken animation boundaries that caused the marquee text to cut off abruptly.
 - Rewrote the CSS animation to slide two identical text blocks synchronously by exactly `-50%`, creating a **perfect, continuous infinite loop**.
 - Added an explicit `marginTop: 5px` separator and appended new text nodes (" Made by Moms", "No Chemicals", etc.).
+
+### Navigation Update (`components/navbar.tsx`)
+- Restructured navigation explicitly adhering to 4 options: **Home, Shop, About Us, Contact**. 
+- Retained the **Cart, User Icon, and "Shop Now" CTA pill** for high utility interaction across all screen sizes. Live authentication state replaces the User icon directly with the Account/Logout when logged in.
 
 ### Why Choose Us (`components/why-section.tsx`)
 - Rebuilt the entire copy and tag layout to completely match the target Figma/HTML reference.
@@ -36,11 +40,23 @@ This document serves as a comprehensive log of all the engineering, frontend, an
 - Rebuilt the layout grid holding 6 specific core value tags (Preservative-free, Homemade with care, Highest hygiene standards, Authentic family recipes, Ready in minutes, Made for Indians everywhere).
 - Updated the visual UI of the story card on the left side with the precise quote box design ("I just wanted my daughter to have a warm meal...").
 
-## 4. Backend & Store Functionality Setup
-- Initialized local state logic spanning the cart and checkout processes (`lib/store/cart-store`).
-- Created framework configurations for later integrations: user accounts (`app/account/`), order tracking (`app/track/`), and basic admin layout routes (`app/admin/`).
-- Database and backend foundation scaffolding prepped (via Supabase client files).
+## 4. Full Dynamic Database Integration (Supabase + SSR)
+- Conducted deep audit of static dependency resulting in complete removal of `lib/mock-data.ts`.
+- Structured fully relational normalized SQL schema mapping: `Profiles`, `Addresses`, `Products`, `Orders`, `Coupons`, `Reviews`, and `Wishlists`. 
+- Generated modular, scalable Server Actions (`lib/supabase/actions.ts`) bridging mutations safely to Supabase bypassing client exposure.
+- Produced robust Server components mapping data to specific user scopes via fetch logic in (`lib/supabase/queries.ts`).
+
+### Pages Transformed from Mock to DB
+1. **Pages Optimization**: Unified generic `/products` and `/shop` into a solitary dynamic `/shop` grid filtering over live DB data and single `product/[id]` detail instances. 
+2. **Checkout Engine Integration (`/checkout`)**: Fully validates real Cart session data. Pulls down actual Supabase stored Customer Addresses. Validates existing dynamic active `Coupons` securely on server. Creates live `orders` and `order_items`. Drops down into unified real-time `/order-success` and `/track/[id]` workflows connected securely to the generated ID logic from DB insert. 
+3. **User Profile System (`/account`)**: Dynamic Dashboard built for user interaction encompassing specific queries for live Profiles, Multi-Addresses configurations, native `UserOrders` and real-time tracked `Wishlists`. Auth relies universally on Supabase SSR context cookies and custom `middleware.ts`. 
+4. **Admin Ecosystem Redesign (`/admin`)**:
+    - Overhauled **Dashboard** analytics fetching realtime revenue aggregates, user statistics, order volumes natively scaling through Supabase data streams. 
+    - Reconstructed **Orders Management** allowing realtime tracking number inputs alongside order-status CRUD logic updating instantly database-wide.
+    - Updated **Products Management** executing complex dynamic catalog management over form-data payloads updating exact items for live viewing in shop. 
+    - Added dedicated **Hero View Panel** saving an array matrix specifically pulling featured ID flags on products directly to Homepage root.
 
 ## 5. Deployment & Source Control
 - Initialized a fresh Git repository, tracked all relevant components, and performed a clean, comprehensive initial commit to version control.
-- Synced the codebase and securely pushed it up to the `main` branch of the official GitHub repository (`EazyRushi/SabhiChef`).
+- Pushed static configurations and mock refactoring early.
+- Finalized massive Supabase Dynamic integration migration into Git tracking, pushed successfully to the official repository.

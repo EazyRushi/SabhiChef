@@ -11,9 +11,7 @@ export default function Footer() {
         <div className="grid grid-cols-4 gap-11 mb-11 pb-9 border-b border-white/10">
           {/* Logo & About */}
           <div>
-            <div className="w-12.5 h-12.5 bg-orange rounded-full flex items-center justify-center text-white font-black text-xl mb-3">
-              SC
-            </div>
+            <img src="/logo.png" alt="Sabhi Chef Logo" className="h-14 w-auto object-contain mb-3" />
             <p className="text-sm text-white/48 leading-relaxed max-w-57 font-semibold">
               Sabhi Chef brings authentic homemade Indian food to your doorstep. Cooked by real mothers with real love.
             </p>

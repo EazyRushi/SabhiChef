@@ -39,8 +39,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-12 py-3 border-b-4" style={{ background: 'rgba(255,249,237,0.96)', backdropFilter: 'blur(16px)', borderColor: '#FEE472' }}>
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2">
-        <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-base" style={{ background: '#F47B40' }}>SC</div>
-        <span className="font-black text-sm hidden sm:inline" style={{ color: '#1e0f00' }}>Sabhi Chef</span>
+        <img src="/logo.png" alt="Sabhi Chef Logo" className="h-10 w-auto object-contain" />
       </Link>
 
       {/* Desktop Nav */}

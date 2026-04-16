@@ -49,9 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Logo */}
         <div className="p-6 border-b border-white/5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F47B40] to-[#DD2D2B] flex items-center justify-center font-black text-sm">
-              SC
-            </div>
+            <img src="/logo.png" alt="Sabhi Chef Logo" className="w-10 h-10 object-contain bg-white/10 rounded-md p-1" />
             <div>
               <h1 className="text-sm font-black tracking-wide">SABHI CHEF</h1>
               <p className="text-[10px] text-white/40 font-semibold tracking-wider uppercase">Admin Panel</p>

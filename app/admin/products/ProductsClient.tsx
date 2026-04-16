@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Plus, Pencil, Trash2, Search, X } from 'lucide-react'
 import { adminUpsertProduct, adminDeleteProduct } from '@/lib/supabase/actions'
 import type { Product } from '@/lib/types'
-import { useRouter } from 'next/navigation'
 
 export default function AdminProductsClient({ products: initial }: { products: Product[] }) {
   const [products, setProducts] = useState<Product[]>(initial)
@@ -13,7 +12,7 @@ export default function AdminProductsClient({ products: initial }: { products: P
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [saving, setSaving] = useState(false)
-  const router = useRouter()
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const categories = ['all', 'breakfast', 'meals', 'sweet', 'condiment', 'beverage', 'snack']
 
@@ -27,19 +26,31 @@ export default function AdminProductsClient({ products: initial }: { products: P
     if (!confirm('Delete this product?')) return
     setProducts(products.filter(p => p.id !== id))
     await adminDeleteProduct(id)
-    router.refresh()
+    window.location.reload()
   }
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setSaving(true)
-    const fd = new FormData(e.currentTarget)
-    if (editingProduct) fd.append('id', editingProduct.id)
-    await adminUpsertProduct(fd)
-    setSaving(false)
-    setShowForm(false)
-    setEditingProduct(null)
-    router.refresh()
+    setSaveError(null)
+    try {
+      const fd = new FormData(e.currentTarget)
+      if (editingProduct) fd.append('id', editingProduct.id)
+      const result = await adminUpsertProduct(fd) as { error?: string } | undefined
+      if (result?.error) {
+        setSaveError(result.error)
+        setSaving(false)
+        return
+      }
+      setSaving(false)
+      setShowForm(false)
+      setEditingProduct(null)
+      window.location.reload()
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error occurred'
+      setSaveError(message)
+      setSaving(false)
+    }
   }
 
   return (
@@ -142,8 +153,9 @@ export default function AdminProductsClient({ products: initial }: { products: P
                   <input name="compare_price" type="number" defaultValue={editingProduct?.compare_price ?? ''} className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#F47B40]/50" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-white/40 mb-1.5 uppercase tracking-wider">Image URL</label>
-                  <input name="image_url" defaultValue={editingProduct?.image_url} placeholder="https://..." className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#F47B40]/50" />
+                  <label className="block text-xs font-bold text-white/40 mb-1.5 uppercase tracking-wider">Image Upload</label>
+                  <input name="image" type="file" accept="image/*" className="w-full text-sm text-white/60 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[#F47B40]/20 file:text-[#F47B40] hover:file:bg-[#F47B40]/30 transition cursor-pointer" />
+                  <input name="image_url" type="hidden" defaultValue={editingProduct?.image_url} />
                 </div>
               </div>
               <div>
@@ -154,12 +166,12 @@ export default function AdminProductsClient({ products: initial }: { products: P
                 <div>
                   <label className="block text-xs font-bold text-white/40 mb-1.5 uppercase tracking-wider">Category</label>
                   <select name="category" defaultValue={editingProduct?.category || 'meals'} className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#F47B40]/50">
-                    <option value="breakfast">Breakfast</option>
-                    <option value="meals">Meals</option>
-                    <option value="sweet">Sweet & Drinks</option>
-                    <option value="condiment">Condiments</option>
-                    <option value="beverage">Beverage</option>
-                    <option value="snack">Snack</option>
+                    <option value="breakfast" className="bg-[#1a1a1a] text-white">Breakfast</option>
+                    <option value="meals" className="bg-[#1a1a1a] text-white">Meals</option>
+                    <option value="sweet" className="bg-[#1a1a1a] text-white">Sweet & Drinks</option>
+                    <option value="condiment" className="bg-[#1a1a1a] text-white">Condiments</option>
+                    <option value="beverage" className="bg-[#1a1a1a] text-white">Beverage</option>
+                    <option value="snack" className="bg-[#1a1a1a] text-white">Snack</option>
                   </select>
                 </div>
                 <div>
@@ -197,8 +209,13 @@ export default function AdminProductsClient({ products: initial }: { products: P
                   <input type="checkbox" name="is_featured" defaultChecked={editingProduct?.is_featured ?? false} className="accent-[#FEE472]" /> Featured (shows on homepage)
                 </label>
               </div>
+              {saveError && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold">
+                  ❌ Error: {saveError}
+                </div>
+              )}
               <div className="flex justify-end gap-3 pt-4">
-                <button type="button" onClick={() => { setShowForm(false); setEditingProduct(null) }}
+                <button type="button" onClick={() => { setShowForm(false); setEditingProduct(null); setSaveError(null) }}
                   className="px-5 py-2.5 rounded-xl text-sm font-bold text-white/50 hover:text-white/80 bg-white/5 hover:bg-white/10 transition">Cancel</button>
                 <button type="submit" disabled={saving}
                   className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#F47B40] to-[#DD2D2B] hover:opacity-90 transition disabled:opacity-50">

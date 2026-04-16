@@ -65,11 +65,13 @@ export default function Hero({ featuredProducts }: HeroProps) {
             — from our kitchen to yours
           </div>
 
-          <h1 className="text-5xl lg:text-7xl font-black leading-tight mb-4" style={{ color: '#1e0f00' }}>
-            Real Indian food.<br />
-            <span style={{ color: '#DD2D2B' }}>Tasty.</span>{' '}
-            <span style={{ color: '#16703A' }}>Healthy.</span><br />
-            Ready in minutes.
+          <h1 className="text-5xl lg:text-[64px] font-black leading-[1.15] mb-5 tracking-tight" style={{ color: '#1e0f00' }}>
+            <span className="block">Real Indian food.</span>
+            <span className="block">
+              <span style={{ color: '#DD2D2B' }}>Tasty.</span>{' '}
+              <span style={{ color: '#16703A' }}>Healthy.</span>
+            </span>
+            <span className="block">Ready in minutes.</span>
           </h1>
 
           <p className="text-lg leading-relaxed font-semibold max-w-md mb-8" style={{ color: '#7a4a20' }}>

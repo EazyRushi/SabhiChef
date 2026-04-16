@@ -234,38 +234,76 @@ export async function toggleWishlist(productId: string) {
 // ADMIN: PRODUCT ACTIONS
 // ============================================
 
-export async function adminUpsertProduct(formData: FormData) {
-  const supabase = await createClient()
-  const id = formData.get('id') as string
+export async function adminUpsertProduct(formData: FormData): Promise<{ error?: string } | void> {
+  try {
+    const supabase = await createClient()
+    const id = formData.get('id') as string
 
-  const payload = {
-    name: formData.get('name') as string,
-    slug: (formData.get('name') as string).toLowerCase().replace(/\s+/g, '-'),
-    description: formData.get('description') as string,
-    price: Number(formData.get('price')),
-    compare_price: formData.get('compare_price') ? Number(formData.get('compare_price')) : null,
-    category: formData.get('category') as Product['category'],
-    image_url: formData.get('image_url') as string || '/placeholder.svg',
-    weight: formData.get('weight') as string,
-    servings: formData.get('servings') as string,
-    prep_time: formData.get('prep_time') as string,
-    ingredients: formData.get('ingredients') as string,
-    instructions: formData.get('instructions') as string,
-    tags: (formData.get('tags') as string).split(',').map((t: string) => t.trim()).filter(Boolean),
-    in_stock: formData.get('in_stock') === 'on',
-    is_featured: formData.get('is_featured') === 'on',
-    updated_at: new Date().toISOString(),
+    let imageUrl = (formData.get('image_url') as string) || ''
+
+    // Handle file upload
+    const imageFile = formData.get('image') as File
+    if (imageFile && imageFile.size > 0) {
+      const fileExt = imageFile.name.split('.').pop()
+      const fileName = `${Math.random().toString(36).substring(2, 10)}_${Date.now()}.${fileExt}`
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(fileName, imageFile)
+
+      if (!uploadError && uploadData) {
+        const { data } = supabase.storage.from('products').getPublicUrl(uploadData.path)
+        imageUrl = data.publicUrl
+      } else {
+        console.error('Storage Upload Error:', uploadError)
+        // Don't block product creation if image upload fails — just use fallback
+      }
+    }
+
+    const tagsRaw = formData.get('tags') as string | null
+    const tags = tagsRaw ? tagsRaw.split(',').map((t: string) => t.trim()).filter(Boolean) : []
+
+    const payload = {
+      name: (formData.get('name') as string) || '',
+      slug: ((formData.get('name') as string) || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || `product-${Date.now()}`,
+      description: (formData.get('description') as string) || '',
+      price: Number(formData.get('price')) || 0,
+      compare_price: formData.get('compare_price') ? Number(formData.get('compare_price')) : null,
+      category: (formData.get('category') as Product['category']) || 'meals',
+      image_url: imageUrl || '/placeholder.svg',
+      weight: (formData.get('weight') as string) || '—',
+      servings: (formData.get('servings') as string) || '—',
+      prep_time: (formData.get('prep_time') as string) || '—',
+      ingredients: (formData.get('ingredients') as string) || null,
+      instructions: (formData.get('instructions') as string) || null,
+      tags,
+      in_stock: formData.get('in_stock') === 'on',
+      is_featured: formData.get('is_featured') === 'on',
+      updated_at: new Date().toISOString(),
+    }
+
+    let error
+    if (id) {
+      const res = await supabase.from('products').update(payload).eq('id', id)
+      error = res.error
+    } else {
+      const res = await supabase.from('products').insert({ ...payload, sort_order: 0 })
+      error = res.error
+    }
+
+    if (error) {
+      console.error('Supabase product error:', error)
+      return { error: error.message }
+    }
+
+    revalidatePath('/admin/products')
+    revalidatePath('/shop')
+    revalidatePath('/')
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unexpected server error'
+    console.error('adminUpsertProduct threw:', err)
+    return { error: message }
   }
-
-  if (id) {
-    await supabase.from('products').update(payload).eq('id', id)
-  } else {
-    await supabase.from('products').insert({ ...payload, sort_order: 0 })
-  }
-
-  revalidatePath('/admin/products')
-  revalidatePath('/shop')
-  revalidatePath('/')
 }
 
 export async function adminDeleteProduct(id: string) {

@@ -30,9 +30,23 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Protect /admin routes — basic check; add role check after DB is live
-  if (pathname.startsWith('/admin') && !user) {
-    return NextResponse.redirect(new URL('/login', request.url))
+  // Protect /admin routes with strict role check
+  if (pathname.startsWith('/admin')) {
+    if (!user) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+    
+    // Fetch user profile to check role
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (!profile || profile.role !== 'admin') {
+      // If they are logged in but NOT an admin, kick them back to their customer account
+      return NextResponse.redirect(new URL('/account', request.url))
+    }
   }
 
   // Redirect logged-in users away from login/signup
